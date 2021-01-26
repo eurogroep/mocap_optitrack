@@ -61,10 +61,6 @@ namespace mocap_optitrack
        serverDescription.commandPort = config.command_port;
        serverDescription.dataPort = config.data_port;
        serverDescription.multicastIpAddress = config.multicast_address;
-       // Here check if there are many rigid bodies in Configurations
-       if (publisherConfigurations.size()<2) {
-        publisherConfigurations[0].rigidBodyId = config.rigid_bodyId;
-       }else {ROS_WARN("There are more than 1 rigid body defiend ! ");}
 
        initialize(serverDescription, publisherConfigurations);
     }
