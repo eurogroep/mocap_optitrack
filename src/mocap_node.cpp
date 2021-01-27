@@ -90,6 +90,7 @@ namespace mocap_optitrack
               connectionRequestMsgBuffer.size(),
               serverDescription.commandPort);
             if (updateDataModelFromServer()) usleep(10);
+            ros::spinOnce();
           }
           // Once we have the server info, create publishers
           publishDispatcherPtr.reset(
@@ -175,6 +176,7 @@ int main( int argc, char* argv[] )
   // Create node object, initialize and run
   mocap_optitrack::OptiTrackRosBridge node(nh, serverDescription, publisherConfigurations);
 
+  node.initialize(serverDescription, publisherConfigurations);
   node.run();
 
   return 0;
