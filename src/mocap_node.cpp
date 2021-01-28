@@ -49,11 +49,11 @@ namespace mocap_optitrack
     OptiTrackRosBridge(ros::NodeHandle& nh,
       ServerDescription const& serverDescr, 
       PublisherConfigurations const& pubConfigs) :
-        nh(nh),
-        serverDescription(serverDescr),
-        publisherConfigurations(pubConfigs)
+        nh(nh)
     {
         server.setCallback(boost::bind(&OptiTrackRosBridge::reconfigureCallback, this, _1, _2));
+        serverDescription = serverDescr;
+        publisherConfigurations = pubConfigs;
     }
 
     void reconfigureCallback(MocapOptitrackConfig& config, uint32_t)
@@ -63,10 +63,10 @@ namespace mocap_optitrack
        serverDescription.dataPort = config.data_port;
        serverDescription.multicastIpAddress = config.multicast_address;
 
-       initialize(serverDescription);
+       initialize();
     }
 
-    void initialize(mocap_optitrack::ServerDescription serverDescription)
+    void initialize()
     {
       if (serverDescription.enableOptitrack) {
           // Create socket
@@ -174,7 +174,7 @@ int main( int argc, char* argv[] )
 
   // Create node object, initialize and run
   mocap_optitrack::OptiTrackRosBridge node(nh, serverDescription, publisherConfigurations);
-  node.initialize(serverDescription);
+  node.initialize();
   node.run();
 
   return 0;
