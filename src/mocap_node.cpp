@@ -39,6 +39,7 @@
 // ROS includes
 #include <ros/ros.h>
 
+
 namespace mocap_optitrack
 {
 
@@ -62,10 +63,10 @@ namespace mocap_optitrack
        serverDescription.dataPort = config.data_port;
        serverDescription.multicastIpAddress = config.multicast_address;
 
-       initialize(serverDescription, publisherConfigurations);
+       initialize(serverDescription);
     }
 
-    void initialize(mocap_optitrack::ServerDescription serverDescription, mocap_optitrack::PublisherConfigurations publisherConfigurations)
+    void initialize(mocap_optitrack::ServerDescription serverDescription)
     {
       if (serverDescription.enableOptitrack) {
           // Create socket
@@ -104,7 +105,6 @@ namespace mocap_optitrack
 
     void run()
     {
-
       while (ros::ok())
       {
         if (initialized){
@@ -119,8 +119,9 @@ namespace mocap_optitrack
               dataModel.clear();
 
               // If we processed some data, take a short break
+              usleep( 10 );
             }
-        }else {usleep( 10 );}
+        }
         ros::spinOnce();
       }
     }
@@ -154,8 +155,6 @@ namespace mocap_optitrack
     std::unique_ptr<RigidBodyPublishDispatcher> publishDispatcherPtr;
     dynamic_reconfigure::Server<MocapOptitrackConfig> server;
     bool initialized;
-
-
   };
 
 } // namespace
@@ -175,8 +174,7 @@ int main( int argc, char* argv[] )
 
   // Create node object, initialize and run
   mocap_optitrack::OptiTrackRosBridge node(nh, serverDescription, publisherConfigurations);
-
-  node.initialize(serverDescription, publisherConfigurations);
+  node.initialize(serverDescription);
   node.run();
 
   return 0;
